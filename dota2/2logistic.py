@@ -18,11 +18,11 @@ X_features = X_features.drop(columns=['lobby_type', 'r1_hero', 'r2_hero', 'r3_he
 lobby = pd.get_dummies(features['lobby_type'])
 # Преименовыаем столбцы, чтобы избежать совпадений названий столбцов в будущем
 lobby = lobby.rename(columns={0: 'zero', 1: 'one', 7: 'seven'})
+# N = pd.unique(features['r1_hero']) — количество различных героев в выборке
 # Кодируем категориальные признаки в бинарные. Из 10 признаков получаем 108, пользуемся тем, что исходные
 # 10 признаков имеют общие возможные значения
-# N = pd.unique(features['r1_hero']) — количество различных героев в выборке
 heroes = sum([pd.get_dummies(features['r%d_hero' % i]) + -1 * pd.get_dummies(features['d%d_hero' % i])
-              for i in range(1, 6)])
+              for i in range(1, 6)])  # Здесь поисходит матричное сложение
 # Добавляем признаки lobby и heroes в X_features
 X_features = pd.concat([X_features, heroes, lobby], axis=1)
 
@@ -71,4 +71,4 @@ print('max:', max(res[0]), 'min:', min(res[0]))  # Результат
 # 3. Всего 108 разных героев.
 # 4. Добавление мешка слов улучшило качество, теперь AUC = 0.752. Скорее всего некоторые герои или сочетания
 # героев сильнее других.
-# 5. Максимальное значение вероятности - 0.815, минимальное - 0.184
+# 5. Максимальное значение прогноза - 0.815, минимальное - 0.184

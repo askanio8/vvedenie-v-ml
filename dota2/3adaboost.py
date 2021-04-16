@@ -60,7 +60,7 @@ for n in range(5):
     clf = LogisticRegression(penalty='l2', C=1)
     clf.fit(X_train, y_train)
     res = clf.predict_proba(X_test)
-    auc.append(roc_auc_score(y_test['radiant_win'], res[:, 1]))  # Здесь auc на тестовой выборке больше 0.754,
+    auc.append(roc_auc_score(y_test['radiant_win'], res[:, 1]))  # Здесь auc на тестовой выборке больше 0.75,
     print(sum(auc)/len(auc))
 
 
