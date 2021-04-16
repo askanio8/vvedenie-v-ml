@@ -26,8 +26,7 @@ heroes = sum([pd.get_dummies(features['r%d_hero' % i]) + -1 * pd.get_dummies(fea
 # Добавляем признаки lobby и heroes в X_features
 X_features = pd.concat([X_features, heroes, lobby], axis=1)
 
-# Возможно здесь достаточно столбца radiant_win. Но интересно попробовать уйти от задачи классификации к задаче
-# регресии, если использовать tower_status...
+# Достаточно столбца radiant_win.
 Y_features = features.filter(items=['duration', 'radiant_win', 'tower_status_radiant', 'tower_status_dire',
                                     'barracks_status_radiant', 'barracks_status_dire'])
 # Заполнение пропусков
@@ -73,10 +72,3 @@ print('max:', max(res[0]), 'min:', min(res[0]))  # Результат
 # 4. Добавление мешка слов улучшило качество, теперь AUC = 0.752. Скорее всего некоторые герои или сочетания
 # героев сильнее других.
 # 5. Максимальное значение вероятности - 0.815, минимальное - 0.184
-
-
-# Еще
-# 1. Roc-auc
-# 2. Анализ выбросов
-# 3. Анализ признаков
-# 4. Другие методы

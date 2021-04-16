@@ -11,8 +11,7 @@ features_test = pd.read_csv('features_test.csv', index_col='match_id')
 # Разделяем в train входы и выходы
 X_features = features.drop(columns=['duration', 'radiant_win', 'tower_status_radiant', 'tower_status_dire',
                                     'barracks_status_radiant', 'barracks_status_dire'])
-# Возможно здесь достаточно столбца radiant_win. Но интересно попробовать уйти от задачи классификации к задаче
-# регресии, если использовать tower_status...
+# Достаточно столбца radiant_win.
 Y_features = features.filter(items=['duration', 'radiant_win', 'tower_status_radiant', 'tower_status_dire',
                                     'barracks_status_radiant', 'barracks_status_dire'])
 # Теперь количество столбцовв X_features и features_test совпадает
@@ -68,7 +67,7 @@ for n in [1000]:
     # max_leaf_nodes - наверное похоже на max_depth
     # subsamle - подвыборка для дерева, рекомендуют искать около 0.8
     clf = GradientBoostingClassifier(n_estimators=n, learning_rate=0.2, max_depth=2, max_features=4)
-    randomnumbers = crossvalidator.split(X=X_features)
+    crossvalidator.split(X=X_features)
     # auc - площадь под ROC кривой
     auc = cross_val_score(clf, X_features, Y_features['radiant_win'], cv=crossvalidator, scoring='roc_auc',
                           n_jobs=4)
