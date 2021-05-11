@@ -45,10 +45,10 @@ y_train = datatable['t'][:120].values
 X_test  = datatable.drop('t', axis=1)[120:].values
 y_test  = datatable['t'][120:].values
 
-############################################ПОИСК МОДЕЛИ####################################################
+############################################ПОСТРОЕНИЕ МОДЕЛИ####################################################
 #  Обучение нейронной сети
 # Creating a model
-seed = random.randrange(1000)
+seed = random.randrange(1000)  # seed = random.randrange(1000); np.random.seed(a) # тоже самое вроде бы
 tensorflow.random.set_seed(seed=seed)
 model = Sequential()
 # Аббакумов рекомендует менше 8 нейронов, мне кажется 800 явно лучше
@@ -70,7 +70,7 @@ for i, x in enumerate(X_test):
     # И снова подаём в модель для предказания следующего значения. Сохраняем предсказания в список
     predictions_test.append(model.predict(a)[0, 0])
 
-err = mape(X_test[-1], predictions_test)  # np.mean(100 * abs(X_test[-1] - predictions) / X_test[-1])
+err = mape(y_test, predictions_test)  # np.mean(100 * abs(X_test[-1] - predictions) / X_test[-1])
 print("MAPE с накоплением ошибки: %.2f%%" % err)
 
 # Делаем предсказания моделью для обучающих данных
@@ -86,13 +86,13 @@ plt.show()
 
 ############################################ПРЕДСКАЗАНИЕ#################################################
 # Если прогноз хороший, сохранить seed на всякий случай и обучить модель на полных данных
-#model.fit(datatable.drop('t', axis=1).values, datatable['t'].values, epochs=5000, batch_size=None,
-#          workers=4, use_multiprocessing=True)
+model.fit(datatable.drop('t', axis=1).values, datatable['t'].values, epochs=5000, batch_size=None,
+          workers=4, use_multiprocessing=True)
 
-predictions_future = []  # Здесь где-то ошибка
-for i, x in enumerate(datatable.drop('t', axis=1).values[-12:]):
+predictions_future = []
+for i in range(12, 0, -1):
     # Соединяем значения из конца выборки и предсказанные
-    a = np.append(x[0:len(x)-i], predictions_future).reshape((1, 12))
+    a = np.append(y_test[-i:], predictions_future).reshape((1, 12))
     # И снова подаём в модель для предказания следующего значения. Сохраняем предсказания в список
     predictions_future.append(model.predict(a)[0, 0])
 
