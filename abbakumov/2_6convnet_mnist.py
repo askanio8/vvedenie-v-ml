@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow.keras
 from sklearn.model_selection import train_test_split
 from sklearn import  metrics
+import tensorflow.keras as keras
 
 
 # Читаем данные
@@ -16,6 +17,7 @@ X = train.drop(['label'], axis=1)
 
 # Разделяем на обучающую выборку и выборку валидации
 x_train, x_val, y_train, y_val = train_test_split(X.values, Y.values, test_size=0.10, random_state=42)
+
 
 # параметры сети, чтобы их было удобно менять
 batch_size = 64
@@ -61,9 +63,9 @@ model.add(Dropout(0.5))
 # второй слой анализа
 model.add(Dense(num_classes, activation='softmax'))
 
-# определяемся с обучением # можно Adadelta можно adam
+# определяемся с обучением # можно Adadelta можно adam говорил Аббакумов, но здесь adam намного лучше
 model.compile(loss=tensorflow.keras.losses.categorical_crossentropy,
-              optimizer=tensorflow.keras.optimizers.Adadelta(), metrics=['accuracy'])
+              optimizer="adam", metrics=['accuracy'])
 
 model.summary()
 

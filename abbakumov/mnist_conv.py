@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import models
 from tensorflow.keras import layers
+from datetime import datetime
 
 
 # Здесь нет спецформата, обычные ndarray
@@ -61,8 +62,16 @@ print(model.summary())
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=5, batch_size=64)
+# Это для логирования в tensorboard
+# Всё-таки нужно сохранять в разные папки каждое обучение. Или удалять созданные файлы перед каждым вызовом
+log_dir = "logs/fit/" + '0'  # + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+model.fit(x_train, y_train, epochs=5, batch_size=64,
+          validation_data=(x_test, y_test),
+          callbacks=[tensorboard_callback])
 
 test_loss, test_acc = model.evaluate(x_test, y_test)
 print("Loss:", test_loss)
 print("Accuracy:", test_acc)  # 99%
+# в терминале tensorboard --logdir=logs/fit/

@@ -32,9 +32,9 @@ Y_test = utils.to_categorical(y_test, nr_classes)
 
 #  Описываем сеть. Один внутренний слой
 model = Sequential()
-model.add(Dense(196, input_shape=(784,)))  # Наверное здесь линейная функция активации по умолчанию
+model.add(Dense(128, input_shape=(784,)))  # Наверное здесь линейная функция активации по умолчанию
 model.add(Activation('relu'))  # relu сделана отдельным слоем, может это нужно для Dropout?
-model.add(Dropout(0.5))
+# model.add(Dropout(0.5))  # Ухудшает немного
 model.add(Dense(10))
 model.add(Activation('softmax'))
 
@@ -46,12 +46,11 @@ model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=['accur
 
 seed = random.randrange(1000)  # seed = random.randrange(1000); np.random.seed(a) # тоже самое вроде бы
 tensorflow.random.set_seed(seed=1)  # Результат не воспроизводится почему-то
-start_time = datetime.datetime.now()
+
 # workers=2, use_multiprocessing=True Это для распределенной работы видимо, все ядра и так работают
 net_res_1 = model.fit(X_train, Y_train, batch_size=batch_size, epochs=nr_iterations,
                       verbose=1, validation_data=(X_test, Y_test))
 
-print("Time:", datetime.datetime.now() - start_time)
-
-score = model.evaluate(X_test, Y_test, verbose=0)
-print(score)
+test_loss, test_acc = model.evaluate(X_test, Y_test)
+print("Loss:", test_loss)
+print("Accuracy:", test_acc)  # 97.5%
