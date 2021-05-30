@@ -6,9 +6,13 @@ import tensorflow.keras
 from sklearn.model_selection import train_test_split
 from sklearn import  metrics
 import tensorflow.keras as keras
+import matplotlib.pyplot as plt
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras import layers
+import tensorflow as tf
 
 
-# Читаем данные
+# Читаем данные из файла. Здесь не весь MNIST!!!!!!!!!!!!!!!!!!!!
 train = pd.read_csv("train.csv")
 
 # Разделяем предикторы и отклик
@@ -17,7 +21,6 @@ X = train.drop(['label'], axis=1)
 
 # Разделяем на обучающую выборку и выборку валидации
 x_train, x_val, y_train, y_val = train_test_split(X.values, Y.values, test_size=0.10, random_state=42)
-
 
 # параметры сети, чтобы их было удобно менять
 batch_size = 64
@@ -67,11 +70,21 @@ model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss=tensorflow.keras.losses.categorical_crossentropy,
               optimizer="adam", metrics=['accuracy'])
 
-model.summary()
+#model.summary()
 
 model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(x_val, y_val))
 accuracy = model.evaluate(x_val, y_val, verbose=0)
 print('Test accuracy:', accuracy[1])
+
+# Просмотр ошибок обучения. Оцениваем модель вручную.
+for i in range(x_train.shape[0]):
+    ans = model.predict(x_train[i].reshape((1,28,28,1))).reshape((10))
+    ans = np.argmax(ans)
+    label = np.argmax(y_train[i])
+    if ans != label:
+        plt.imshow(image.array_to_img(x_train[i]), cmap="gray") #
+        plt.title("i:" + str(i) + "label:" + str(label) + "ans:" + str(ans))
+        plt.show()
 
 # Вобще для сверточных сетей в некоторых случаях можно делать размножение обучающей выборки путем вращения,
 # отражения и др искажения изображений, иногда это даёт хороший рост качества

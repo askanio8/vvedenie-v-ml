@@ -121,7 +121,7 @@ model.fit(
     steps_per_epoch=100,
     epochs=15,
     validation_data=val_generator,
-    callbacks=[tensorboard_callback])
+    callbacks=[tensorboard_callback])  # 92.17%
 
 # Показываем картинки подряд с результатами распознавания
 for i in range(120):
@@ -132,11 +132,3 @@ for i in range(120):
     plt.title("Вероятность:" + str(res[0][0]) +
               " Адрес:" + str(val_generator.filenames[val_generator.index_array[i]]))
     plt.show()
-
-# Дообучение на отфильтрованных данных
-# flow_from_dataframe
-
-add_train_datagen = ImageDataGenerator(rescale=1. / 255)
-add_train_generator = train_datagen.flow_from_directory("./dogscats/train", classes=['dog1000add', 'cat1000add'],
-                                                        target_size=(150, 150), batch_size=BATCH_SIZE,
-                                                        class_mode='binary', color_mode='grayscale')
