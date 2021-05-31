@@ -105,10 +105,16 @@ Adamax = keras.optimizers.Adamax(
     beta_2=0.999,
     epsilon=1e-07,
     name="Adamax",)
+Nadam = keras.optimizers.Nadam(
+    learning_rate=0.0001,  # 99.31
+    beta_1=0.999,
+    beta_2=0.999,
+    epsilon=1e-07,
+    name="Nadam",)
 # "SGD" без параметров - неплохо 99.2
 SGD = keras.optimizers.SGD(lr=0.001,  # так лучше
                                 nesterov=True, # c нестеровым лучше
-                                momentum=0.0) # плохо # чем меньше, тем меньше скорость
+                                momentum=0.0) # плохо # чем меньше, тем меньше скорость почему-то
 # "RMSprop" без параметров бысто учится но без рекородов по результату(98-99),
 # подбирал параметры - тоже не очень
 RMSprop = keras.optimizers.RMSprop(
@@ -119,7 +125,7 @@ RMSprop = keras.optimizers.RMSprop(
     centered=False,  # нет разницы
     name="RMSprop",)
 
-model.compile(optimizer=Adamax, loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=Nadam, loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Это для логирования в tensorboard
 # Всё-таки нужно сохранять в разные папки каждое обучение. Или удалять созданные файлы перед каждым вызовом
