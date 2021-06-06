@@ -32,11 +32,11 @@ y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
 
-batch_size = 32
+batch_size = 48
 train_datagen = ImageDataGenerator(#rescale=1. / 255,  #
                                    rotation_range=10,  # скорее хуже
-                                   width_shift_range=.1, # скорее лучше
-                                   height_shift_range=.1, # скорее лучше
+                                   width_shift_range=.09, # скорее лучше
+                                   height_shift_range=.09, # скорее лучше
                                    #shear_range=.2,  # скорее хуже, замедляет
                                    #zoom_range=.2,  # скорее хуже
                                    #horizontal_flip=True,  # лучше
@@ -80,7 +80,7 @@ model = models.Sequential([
 ])
 
 print(model.summary())
-adam = keras.optimizers.Adam(
+Adam = keras.optimizers.Adam(
     learning_rate=0.001,  # по умолчанию лучше
     beta_1=0.85,  # скорость затухания 1-го момента(очень большое уменьшение замедляет и ухудшает)
     beta_2=0.999, # скорость затухания 2-го момента(уменьшение замедляет и ухудшает)
@@ -105,9 +105,10 @@ Adamax = keras.optimizers.Adamax(
     beta_2=0.999,
     epsilon=1e-07,
     name="Adamax",)
+#  Результат, как и обычного adam, но показался медленнее
 Nadam = keras.optimizers.Nadam(
-    learning_rate=0.0001,  # 99.31
-    beta_1=0.999,
+    learning_rate=0.001,  # 0.0001- 99.31
+    beta_1=0.85, # 99.50
     beta_2=0.999,
     epsilon=1e-07,
     name="Nadam",)
@@ -124,12 +125,22 @@ RMSprop = keras.optimizers.RMSprop(
     epsilon=1e-07,
     centered=False,  # нет разницы
     name="RMSprop",)
+# "Ftrl" - По умолчанию совсем плохой результат, нужно найти рабочие параметры
+Ftrl = keras.optimizers.Ftrl(
+    learning_rate=0.001,
+    learning_rate_power=-0.5,
+    initial_accumulator_value=0.1,
+    l1_regularization_strength=0.0,
+    l2_regularization_strength=0.0,
+    name="Ftrl",
+    l2_shrinkage_regularization_strength=0.0,
+    beta=0.0,)
 
-model.compile(optimizer=Nadam, loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=Adam, loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Это для логирования в tensorboard
 # Всё-таки нужно сохранять в разные папки каждое обучение. Или удалять созданные файлы перед каждым вызовом
-log_dir = "logs/fit/" + 'Adamax'  # + datetime.now().strftime("%Y%m%d-%H%M%S")
+log_dir = "logs/fit/" + 'Ftrl'  # + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
 model.fit(train_datagen, epochs=15,
