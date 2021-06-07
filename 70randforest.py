@@ -41,6 +41,8 @@ Ydata = data.filter(items=['Rings'])
 r2 = [] # Список оценок качества обучения леса
 crossvalidator = KFold(shuffle=True, random_state=1, n_splits=5)
 for n in range(1, 51):
+    # для случайного леса важен подбор параметров обучения - количество деревьев, максимальная
+    # глубина дерева, загрязненность узла и тд
     clf = RandomForestRegressor(random_state=1, n_estimators=n)
     randnumbers = crossvalidator.split(Xdata)
 

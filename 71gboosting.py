@@ -13,6 +13,8 @@ Ydata = dataArray[:, 0]
 # Авторазбиение выборки на обучающую и тестовую
 X_train, X_test, y_train, y_test = train_test_split(Xdata, Ydata, test_size=0.8, random_state=241)
 
+# Градиентыный бустинг это когда следующее дерево предсказывает ошибку предыдущего, в результате
+# суммарная ошибка уменьшатся
 # verbose=True выводит потери в консоль в процессе построения n_estimators=250 моделей
 clf = GradientBoostingClassifier(n_estimators=250, verbose=True, random_state=241, learning_rate=0.2)
 clf.fit(X_train, y_train)
