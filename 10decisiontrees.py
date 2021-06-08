@@ -25,7 +25,8 @@ dataX = dataX.replace(mapping)  # Замена
 # подбор параметров с помощью GridSearch или вручную
 # Популярные алгоритмы построения деревьев - CART и C4.5
 # Вроде бы деревья в sklearn не могут работать с пропусками, стоит посмотреть в другом пакете
-# Так же sklearn не работает с номинальной шкалой признаков, нужно one-hot-encoder или get_dummies
+# Так же sklearn не работает с номинальной шкалой признаков, нужно one-hot-encoder(numpy, быстрее в продакшене)
+# или get_dummies(pandas)
 clf = DecisionTreeClassifier(random_state=241)  # В данном случае зерно случайности мало влияет на результат обучения
 clf.fit(dataX, dataY)  # Обучение
 importances = clf.feature_importances_  # Показывает важность признаков

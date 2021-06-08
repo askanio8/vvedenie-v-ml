@@ -16,7 +16,18 @@ X_train, X_test, y_train, y_test = train_test_split(Xdata, Ydata, test_size=0.8,
 # Градиентыный бустинг это когда следующее дерево предсказывает ошибку предыдущего, в результате
 # суммарная ошибка уменьшатся
 # verbose=True выводит потери в консоль в процессе построения n_estimators=250 моделей
-clf = GradientBoostingClassifier(n_estimators=250, verbose=True, random_state=241, learning_rate=0.2)
+# Количество объектов
+clf = GradientBoostingClassifier(n_estimators=250, verbose=True, random_state=241,
+                                 learning_rate=0.2, # Аббакумов рекомендует начать поиск с 0.01
+                                 subsample=0.66,  # рекомендуемое значение
+                                 max_features='sqrt',  # рекомендуемое значение
+                                 loss='deviance',  # функция потерь - логистическая/экспоненциальная нужно подбирать
+                                 criterion='friedman_mse',  # это критерий расщепления узла кмк
+                                 min_impurity_split=0.001,  # правило останова при построении дерева
+                                 min_samples_leaf=5,
+                                 min_samples_split=10,
+                                 max_depth=5,
+                                 )
 clf.fit(X_train, y_train)
 
 # staged_decision_function - На каждой итерации обучения из 250 даём на распознавание выборку тестовую или

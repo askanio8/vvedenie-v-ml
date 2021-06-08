@@ -7,6 +7,9 @@ import datetime
 from sklearn.model_selection import cross_val_score
 from sklearn.decomposition import PCA
 import xgboost
+import matplotlib
+import seaborn as sns
+from sklearn.calibration import CalibratedClassifierCV  # Для калибровки
 
 features = pd.read_csv('features.csv').drop(columns=['match_id'])
 
@@ -54,11 +57,31 @@ for c in [500]:
     # booster = gbtree Может быть ансамбль деревьев или линейных моделей. Деревья лучше
     # reg_alpha, reg_lambda - L1, L2 регуляризация
 
-    clf = xgboost.XGBClassifier(base_score=0.5, colsample_bylevel=0.8, colsample_bytree=0.8,
-                                gamma=8, learning_rate=0.1, max_delta_step=0, max_depth=4,
-                                min_child_weight=1, missing=None, n_estimators=c, nthread=-1,
-                                objective='binary:logistic', reg_alpha=5, reg_lambda=5,
-                                scale_pos_weight=2, seed=0, subsample=0.8)
+    clf = xgboost.XGBClassifier(
+                                base_score=0.5,
+                                colsample_bylevel=1, # есть мнение что лучше не трогать, замедляет
+                                colsample_bytree=0.66,  # 0.5-1 или sqrt(numcolumns)
+                                gamma=0.01,  # коэф мин допустимого уменьшения загрязненности при расщеплении. подбирать
+                                learning_rate=0.1, # рекомендуют 0.01-0.2
+                                max_delta_step=0,  # Аббакумов не знает что это
+                                max_depth=4,  # нужно подбирать. рекомендуют <6
+                                min_child_weight=5,  # мин объектов в узле. стоит пробовать больше 5...10...
+                                missing=None,
+                                n_estimators=c,  # подбирать
+                                nthread=1,  # ?? наверное для нескольких компютеров
+                                n_jobs=1,
+                                objective='binary:logistic',
+                                reg_alpha=5,  # коэф регуляризации L1  подбирать
+                                reg_lambda=0,  # коэф регуляризации L2
+                                scale_pos_weight=1,  # при несбалансированности выборки
+                                seed=0,
+                                subsample=0.8,  # подбирать. рекомендуют 0.66
+                                verbosity=1,
+                                )
+    #model = clf.fit(X_features, Y_features['radiant_win'],)
+    #xgboost.plot_importance(model)  #  Важность параметров
+    #print(model.feature_importances_)
+
     randomnumbers = crossvalidator.split(X=X_features)
     auc = cross_val_score(clf, X_features, Y_features['radiant_win'], cv=crossvalidator,
                           scoring='roc_auc',
