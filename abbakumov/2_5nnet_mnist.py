@@ -8,11 +8,14 @@ from tensorflow.keras.optimizers import SGD, Adam, RMSprop
 from tensorflow.keras import utils
 import datetime
 import random
+import time
+
+start = time.time()
 
 #  Задаем параметры сети
 batch_size = 128
 nr_classes = 10
-nr_iterations = 5
+nr_iterations = 3
 
 #  Читаем данные
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
@@ -32,8 +35,8 @@ Y_test = utils.to_categorical(y_test, nr_classes)
 
 #  Описываем сеть. Один внутренний слой
 model = Sequential()
-model.add(Dense(128, input_shape=(784,)))  # Наверное здесь линейная функция активации по умолчанию
-model.add(Activation('relu'))  # relu сделана отдельным слоем, может это нужно для Dropout?
+model.add(Dense(128, input_shape=(784,)))
+model.add(Activation('relu'))  # relu сделана отдельным слоем
 # model.add(Dropout(0.5))  # Ухудшает немного
 model.add(Dense(10))
 model.add(Activation('softmax'))
@@ -54,3 +57,4 @@ net_res_1 = model.fit(X_train, Y_train, batch_size=batch_size, epochs=nr_iterati
 test_loss, test_acc = model.evaluate(X_test, Y_test)
 print("Loss:", test_loss)
 print("Accuracy:", test_acc)  # 97.5%
+print('time:', time.time() - start)
