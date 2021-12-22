@@ -128,10 +128,11 @@ def compute_loss(model, loss_weights, init_image, gram_style_features, content_f
     content_score = 0  # потери контента
 
     # потерям для каждого слоя стиля даем одинаковый вес(1/5.0 = 0.2)
-    weight_per_style_layer = 1.0 / float(num_style_layers)
+    # здесь наиболее значимый 4-й слой
+    weight_per_style_layer = [0.3, 0.2, 0.2, 0.1, 0.2]#1.0 / float(num_style_layers)
     # вычисляем потери для каждого слоя стиля, взвешиваем и складываем
-    for target_style, comb_style in zip(gram_style_features, style_output_features):
-        style_score += weight_per_style_layer * get_style_loss(comb_style[0], target_style)
+    for target_style, comb_style, weight in zip(gram_style_features, style_output_features, weight_per_style_layer):
+        style_score += weight * get_style_loss(comb_style[0], target_style)
 
     # вычисляем потери для каждого слоя контента, взвешиваем и складываем(хотя тут цикл не нужен т.к. слой один)
     weight_per_content_layer = 1.0 / float(num_content_layers)
@@ -149,7 +150,7 @@ def compute_loss(model, loss_weights, init_image, gram_style_features, content_f
 
 num_iterations = 100
 content_weight = 1e3
-style_weight = 1e-2
+style_weight = 1e-4
 
 # получаем признаки контента для изображения контента и признаки стиля для изображения стиля
 style_features, content_features = get_feature_representations(model)
