@@ -2,6 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.polynomial import Polynomial as P
+from matplotlib.figure import *  # здесь рисование геом фигур
 
 
 x = np.arange(-20, 20.01, 0.01)
