@@ -149,11 +149,12 @@ model.fit(train_datagen, epochs=15,
 
 test_loss, test_acc = model.evaluate(x_test, y_test)
 print("Loss:", test_loss)
-print("Accuracy:", test_acc)  # 99.56%
+print("Accuracy:", test_acc)  # 99.43% - 99.56%  # а если выкинуть выбросы, то 99.44% - 99.59%
 # в терминале tensorboard --logdir=logs/fit/
 
 
 # Дообучение. При любых условиях здесь становится хуже, скорее всего бесполезно
+# Нужно не дообучение, а изначальное выбрасывание выбросов sample_weightss.ipynb
 answers = model.predict(x_train)
 gen = [i for i, x in enumerate(answers) if x.max() < 0.9 and y_train[i].argmax() != x.argmax()]
 new_x_train = x_train[gen]
